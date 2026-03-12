@@ -1,2 +1,3 @@
 add_subdirectory(cpp_idioms)
+add_subdirectory(data_structures)
 add_subdirectory(design_patterns)
