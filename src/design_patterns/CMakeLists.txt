@@ -1,3 +1,4 @@
+add_subdirectory(adapter)
 add_subdirectory(bridge)
 add_subdirectory(factory_method)
 add_subdirectory(observer)
