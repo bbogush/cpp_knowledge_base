@@ -1,6 +1,7 @@
 add_subdirectory(adapter)
 add_subdirectory(bridge)
 add_subdirectory(factory_method)
+add_subdirectory(facade)
 add_subdirectory(observer)
 add_subdirectory(singleton)
 add_subdirectory(strategy)
