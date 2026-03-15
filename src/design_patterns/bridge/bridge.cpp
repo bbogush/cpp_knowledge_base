@@ -3,18 +3,15 @@
  *  it under the terms of the Apache License Version 2.0.
  */
 
-
 #include <iostream>
 
-class Implementation
-{
+class Implementation {
 public:
     virtual ~Implementation() = default;
     virtual void operation() = 0;
 };
 
-class ConcreteImplementationA : public Implementation
-{
+class ConcreteImplementationA : public Implementation {
 public:
     void operation() override
     {
@@ -22,8 +19,7 @@ public:
     }
 };
 
-class ConcreteImplementationB : public Implementation
-{
+class ConcreteImplementationB : public Implementation {
 public:
     void operation() override
     {
@@ -31,19 +27,20 @@ public:
     }
 };
 
-class Abstraction
-{
+class Abstraction {
 public:
-    Abstraction(Implementation* impl) : implementation(impl) {}
+    Abstraction(Implementation *impl) : implementation(impl)
+    {
+    }
     virtual ~Abstraction() = default;
     virtual void operation()
     {
         implementation->operation();
     }
-private:
-    Implementation* implementation;
-};
 
+private:
+    Implementation *implementation;
+};
 
 int main()
 {
