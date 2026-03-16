@@ -1,3 +1,4 @@
+add_subdirectory(abstract_factory)
 add_subdirectory(adapter)
 add_subdirectory(bridge)
 add_subdirectory(factory_method)
