@@ -9,6 +9,27 @@ This document defines the coding style for this C++ project. The goal is **reada
 - [Background](#background)
   - [Goals of the Style Guide](#goals-of-the-style-guide)
 - [C++ Version](#c-version)
+- [Formatting](#formatting)
+  - [Line Length](#line-length)
+  - [Non-ASCII Characters](#non-ascii-characters)
+  - [Spaces vs. Tabs](#spaces-vs-tabs)
+  - [Function Declarations and Definitions](#function-declarations-and-definitions)
+  - [Lambda Expressions (Formatting)](#lambda-expressions-formatting)
+  - [Floating-point Literals](#floating-point-literals)
+  - [Function Calls](#function-calls)
+  - [Braced Initializer List Format](#braced-initializer-list-format)
+  - [Conditionals](#conditionals)
+  - [Loops and Switch Statements](#loops-and-switch-statements)
+  - [Pointer and Reference Expressions](#pointer-and-reference-expressions)
+  - [Boolean Expressions](#boolean-expressions)
+  - [Return Values](#return-values)
+  - [Variable and Array Initialization](#variable-and-array-initialization)
+  - [Preprocessor Directives](#preprocessor-directives)
+  - [Class Format](#class-format)
+  - [Constructor Initializer Lists](#constructor-initializer-lists)
+  - [Namespace Formatting](#namespace-formatting)
+  - [Horizontal Whitespace](#horizontal-whitespace)
+  - [Vertical Whitespace](#vertical-whitespace)
 - [Header Files](#header-files)
   - [Self-contained Headers](#self-contained-headers)
   - [The #define Guard](#the-define-guard)
@@ -86,27 +107,6 @@ This document defines the coding style for this C++ project. The goal is **reada
   - [Punctuation, Spelling, and Grammar](#punctuation-spelling-and-grammar)
   - [TODO Comments](#todo-comments)
   - [Deprecation Comments](#deprecation-comments)
-- [Formatting](#formatting)
-  - [Line Length](#line-length)
-  - [Non-ASCII Characters](#non-ascii-characters)
-  - [Spaces vs. Tabs](#spaces-vs-tabs)
-  - [Function Declarations and Definitions](#function-declarations-and-definitions)
-  - [Lambda Expressions (Formatting)](#lambda-expressions-formatting)
-  - [Floating-point Literals](#floating-point-literals)
-  - [Function Calls](#function-calls)
-  - [Braced Initializer List Format](#braced-initializer-list-format)
-  - [Conditionals](#conditionals)
-  - [Loops and Switch Statements](#loops-and-switch-statements)
-  - [Pointer and Reference Expressions](#pointer-and-reference-expressions)
-  - [Boolean Expressions](#boolean-expressions)
-  - [Return Values](#return-values)
-  - [Variable and Array Initialization](#variable-and-array-initialization)
-  - [Preprocessor Directives](#preprocessor-directives)
-  - [Class Format](#class-format)
-  - [Constructor Initializer Lists](#constructor-initializer-lists)
-  - [Namespace Formatting](#namespace-formatting)
-  - [Horizontal Whitespace](#horizontal-whitespace)
-  - [Vertical Whitespace](#vertical-whitespace)
 - [Exceptions to the Rules](#exceptions-to-the-rules)
   - [Existing Non-conformant Code](#existing-non-conformant-code)
   - [Windows Code](#windows-code)
@@ -127,15 +127,217 @@ This document defines the coding style for this C++ project. The goal is **reada
 
 ## C++ Version
 
-- Prefer modern C++ (C++17/C++20) best practices
-- Prefer `constexpr`, `noexcept`, `[[nodiscard]]`
-- Prefer `enum class` over `enum`
-- Prefer `std::array` / `std::vector` over raw arrays
-- Avoid raw `new` / `delete`
+- C++ version C++20.
+
+---
+
+## Formatting
+
+### Line Length
+
+- Max **100 characters** per line
+
+### Non-ASCII Characters
+
+- Source files must be UTF-8; avoid non-ASCII in identifiers and comments unless necessary (e.g., units)
 
 ```cpp
-[[nodiscard]] int compute() noexcept;
+// OK
+constexpr double micros_per_second = 1e6; // µs
 ```
+
+### Spaces vs. Tabs
+
+- 4 spaces, no tabs
+
+### Function Declarations and Definitions
+
+- Return type on the same line as function name
+- Each parameter on its own line when the signature doesn't fit in 100 chars
+
+```cpp
+void process_order(
+    const Order& order,
+    ExecutionCallback callback);
+```
+
+### Lambda Expressions (Formatting)
+
+- Short lambdas inline; multi-line lambdas indented like a function body
+
+```cpp
+auto f = [](int x) { return x * 2; };
+
+auto g = [&](const Order& o) {
+    validate(o);
+    submit(o);
+};
+```
+
+### Floating-point Literals
+
+- Always include a decimal point to make the type explicit
+
+```cpp
+double ratio = 1.0 / 3.0;
+float scale = 0.5f;
+```
+
+### Function Calls
+
+- Fit arguments on one line or break after the opening parenthesis with 4-space indent
+
+```cpp
+result = long_function_name(
+    first_argument,
+    second_argument);
+```
+
+### Braced Initializer List Format
+
+- Short lists inline; longer lists one element per line
+
+```cpp
+std::vector<int> v = {1, 2, 3};
+
+std::vector<std::string> names = {
+    "alice",
+    "bob",
+    "charlie",
+};
+```
+
+### Conditionals
+
+- K&R brace style; always use braces, even for single-statement bodies
+
+```cpp
+if (condition) {
+    do_something();
+} else {
+    do_other();
+}
+```
+
+### Loops and Switch Statements
+
+- Always brace loop bodies; label `default:` in every `switch`
+- Use `[[fallthrough]]` to mark intentional fall-through
+
+```cpp
+switch (side) {
+    case OrderSide::Buy:
+        handle_buy();
+        break;
+    case OrderSide::Sell:
+        handle_sell();
+        break;
+    default:
+        break;
+}
+```
+
+### Pointer and Reference Expressions
+
+- Attach `*` and `&` to the type, not the variable name
+
+```cpp
+int* ptr;
+const std::string& ref;
+```
+
+### Boolean Expressions
+
+- Break long boolean expressions before the operator; align operators
+
+```cpp
+if (is_valid_order(order) &&
+    has_sufficient_balance(account) &&
+    market_is_open()) {
+    submit(order);
+}
+```
+
+### Return Values
+
+- No parentheses around return values unless needed for clarity
+
+```cpp
+return result;          // not return (result);
+return (a > b) ? a : b; // parens OK for ternary
+```
+
+### Variable and Array Initialization
+
+- Use brace initialization `{}` to prevent narrowing conversions
+
+```cpp
+int x{42};
+std::vector<int> v{1, 2, 3};
+```
+
+### Preprocessor Directives
+
+- Preprocessor directives start at column 0, regardless of indentation
+
+```cpp
+#ifdef DEBUG
+log_debug("state=", state);
+#endif
+```
+
+### Class Format
+
+- Access specifiers at the same indentation as `class`; members indented 4 spaces
+
+```cpp
+class Foo {
+public:
+    explicit Foo(int id);
+    [[nodiscard]] int id() const noexcept;
+
+private:
+    int id_;
+};
+```
+
+### Constructor Initializer Lists
+
+- One initializer per line, aligned after the colon
+
+```cpp
+Foo::Foo(int id, std::string name)
+    : id_{id}
+    , name_{std::move(name)} {}
+```
+
+### Namespace Formatting
+
+- No extra indentation inside namespaces; label closing braces
+
+```cpp
+namespace myproject {
+
+class Bar {};
+
+} // namespace myproject
+```
+
+### Horizontal Whitespace
+
+- Space after keywords (`if`, `for`, `while`), not after function names
+- Space around binary operators; no space around unary operators
+
+```cpp
+if (x > 0) { ... }
+int y = x * 2 + 1;
+++i;
+```
+
+### Vertical Whitespace
+
+- One blank line between method definitions; two blank lines between top-level declarations
+- No trailing whitespace; no more than one consecutive blank line inside a function
 
 ---
 
@@ -892,216 +1094,6 @@ double tick_size_;  // minimum price increment, in USD
 [[deprecated("Use new_api() instead")]]
 void old_api();
 ```
-
----
-
-## Formatting
-
-### Line Length
-
-- Max **100 characters** per line
-
-### Non-ASCII Characters
-
-- Source files must be UTF-8; avoid non-ASCII in identifiers and comments unless necessary (e.g., units)
-
-```cpp
-// OK
-constexpr double kMicrosPerSecond = 1e6; // µs
-```
-
-### Spaces vs. Tabs
-
-- 4 spaces, no tabs
-
-### Function Declarations and Definitions
-
-- Return type on the same line as function name
-- Each parameter on its own line when the signature doesn't fit in 100 chars
-
-```cpp
-void process_order(
-    const Order& order,
-    ExecutionCallback callback);
-```
-
-### Lambda Expressions (Formatting)
-
-- Short lambdas inline; multi-line lambdas indented like a function body
-
-```cpp
-auto f = [](int x) { return x * 2; };
-
-auto g = [&](const Order& o) {
-    validate(o);
-    submit(o);
-};
-```
-
-### Floating-point Literals
-
-- Always include a decimal point to make the type explicit
-
-```cpp
-double ratio = 1.0 / 3.0;
-float scale = 0.5f;
-```
-
-### Function Calls
-
-- Fit arguments on one line or break after the opening parenthesis with 4-space indent
-
-```cpp
-result = long_function_name(
-    first_argument,
-    second_argument);
-```
-
-### Braced Initializer List Format
-
-- Short lists inline; longer lists one element per line
-
-```cpp
-std::vector<int> v = {1, 2, 3};
-
-std::vector<std::string> names = {
-    "alice",
-    "bob",
-    "charlie",
-};
-```
-
-### Conditionals
-
-- K&R brace style; always use braces, even for single-statement bodies
-
-```cpp
-if (condition) {
-    do_something();
-} else {
-    do_other();
-}
-```
-
-### Loops and Switch Statements
-
-- Always brace loop bodies; label `default:` in every `switch`
-- Use `[[fallthrough]]` to mark intentional fall-through
-
-```cpp
-switch (side) {
-    case OrderSide::Buy:
-        handle_buy();
-        break;
-    case OrderSide::Sell:
-        handle_sell();
-        break;
-    default:
-        break;
-}
-```
-
-### Pointer and Reference Expressions
-
-- Attach `*` and `&` to the type, not the variable name
-
-```cpp
-int* ptr;
-const std::string& ref;
-```
-
-### Boolean Expressions
-
-- Break long boolean expressions before the operator; align operators
-
-```cpp
-if (is_valid_order(order) &&
-    has_sufficient_balance(account) &&
-    market_is_open()) {
-    submit(order);
-}
-```
-
-### Return Values
-
-- No parentheses around return values unless needed for clarity
-
-```cpp
-return result;          // not return (result);
-return (a > b) ? a : b; // parens OK for ternary
-```
-
-### Variable and Array Initialization
-
-- Use brace initialization `{}` to prevent narrowing conversions
-
-```cpp
-int x{42};
-std::vector<int> v{1, 2, 3};
-```
-
-### Preprocessor Directives
-
-- Preprocessor directives start at column 0, regardless of indentation
-
-```cpp
-#ifdef DEBUG
-log_debug("state=", state);
-#endif
-```
-
-### Class Format
-
-- Access specifiers at the same indentation as `class`; members indented 4 spaces
-
-```cpp
-class Foo {
-public:
-    explicit Foo(int id);
-    [[nodiscard]] int id() const noexcept;
-
-private:
-    int id_;
-};
-```
-
-### Constructor Initializer Lists
-
-- One initializer per line, aligned after the colon
-
-```cpp
-Foo::Foo(int id, std::string name)
-    : id_{id}
-    , name_{std::move(name)} {}
-```
-
-### Namespace Formatting
-
-- No extra indentation inside namespaces; label closing braces
-
-```cpp
-namespace myproject {
-
-class Bar {};
-
-} // namespace myproject
-```
-
-### Horizontal Whitespace
-
-- Space after keywords (`if`, `for`, `while`), not after function names
-- Space around binary operators; no space around unary operators
-
-```cpp
-if (x > 0) { ... }
-int y = x * 2 + 1;
-++i;
-```
-
-### Vertical Whitespace
-
-- One blank line between method definitions; two blank lines between top-level declarations
-- No trailing whitespace; no more than one consecutive blank line inside a function
 
 ---
 
