@@ -10,9 +10,9 @@ This document defines the coding style for this C++ project. The goal is **reada
   - [Goals of the Style Guide](#goals-of-the-style-guide)
 - [C++ Version](#c-version)
 - [Formatting](#formatting)
+  - [Indentation](#indentation)
   - [Line Length](#line-length)
   - [Non-ASCII Characters](#non-ascii-characters)
-  - [Spaces vs. Tabs](#spaces-vs-tabs)
   - [Function Declarations and Definitions](#function-declarations-and-definitions)
   - [Lambda Expressions (Formatting)](#lambda-expressions-formatting)
   - [Floating-point Literals](#floating-point-literals)
@@ -127,7 +127,7 @@ This document defines the coding style for this C++ project. The goal is **reada
 
 ## C++ Version
 
-- C++ version C++20.
+- Preferred C++ version C++20.
 
 ---
 
@@ -136,6 +136,75 @@ This document defines the coding style for this C++ project. The goal is **reada
 ### Line Length
 
 - Max **100 characters** per line
+
+```c
+// OK
+log_info("parameter1: %d parameter2: %d parameter3: %d parameter4: %d", parameter1,
+    parameter2, parameter3, parameter4);
+
+// Wrong
+log_info("parameter1: %d parameter2: %d parameter3: %d parameter4: %d", parameter1, parameter2, parameter3, parameter4);
+```
+
+- Constant strings longer than one line should be closed on each line by a quote and opened again on the next line.
+```c
+// OK
+log_info("This is a long string that we want to print and is more than 100 chars long so we need "
+         "to split it");
+
+// Wrong
+log_info("This is a long string that we want to print and is more than 100 chars long so we need \
+         to split it");
+```
+
+### Indentation
+
+- Indentation is 4 spaces, no tabs
+- Single indentation after breaking up line.
+
+```c
+// OK
+if (parameter1 != nullptr && parameter2 != nullptr && parameter3 != nullptr &&
+    parameter4 != nullptr) {
+    return 0;
+}
+
+// OK
+log_info("parameter1: %d parameter2: %d parameter3: %d parameter4: %d", parameter1,
+    parameter2, parameter3, parameter4);
+
+// OK
+void func(long int parameter1, const char *parameter2, double parameter3, int *parameter4,
+    int parameter5);
+
+// Wrong
+if (parameter1 != nullptr && parameter2 != nullptr && parameter3 != nullptr &&
+        parameter4 != nullptr) {
+    return 0;
+}
+
+// Wrong
+void func(long int parameter1, const char *parameter2, double parameter3, int *parameter4,
+          int parameter5);
+
+// Wrong
+log_info("parameter1: %d parameter2: %d parameter3: %d parameter4: %d", parameter1,
+         parameter2, parameter3, parameter4);
+
+```
+
+- Indentation is required for every opening bracket.
+```c
+// OK
+if (a) {
+    do_a();
+} else {
+    do_b();
+    if (c) {
+        do_c();
+    }
+}
+```
 
 ### Non-ASCII Characters
 
@@ -146,19 +215,12 @@ This document defines the coding style for this C++ project. The goal is **reada
 constexpr double micros_per_second = 1e6; // µs
 ```
 
-### Spaces vs. Tabs
-
-- 4 spaces, no tabs
-
 ### Function Declarations and Definitions
 
 - Return type on the same line as function name
-- Each parameter on its own line when the signature doesn't fit in 100 chars
 
 ```cpp
-void process_order(
-    const Order& order,
-    ExecutionCallback callback);
+void process_order(const Order& order, ExecutionCallback callback);
 ```
 
 ### Lambda Expressions (Formatting)
