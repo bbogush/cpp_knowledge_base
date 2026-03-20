@@ -10,8 +10,9 @@ This document defines the coding style for this C++ project. The goal is **reada
   - [Goals of the Style Guide](#goals-of-the-style-guide)
 - [C++ Version](#c-version)
 - [Formatting](#formatting)
-  - [Indentation](#indentation)
   - [Line Length](#line-length)
+  - [Indentation](#indentation)
+  - [Spaces](#spaces)
   - [Non-ASCII Characters](#non-ascii-characters)
   - [Function Declarations and Definitions](#function-declarations-and-definitions)
   - [Lambda Expressions (Formatting)](#lambda-expressions-formatting)
@@ -205,6 +206,62 @@ if (a) {
     }
 }
 ```
+
+## Spaces
+
+- Single space between `if/while/for/do` keyword and opening parenthesis.
+```c
+// OK
+if (condition)
+while (condition)
+for (init; condition; step)
+do {} while (condition)
+
+// Wrong
+if(condition)
+while(condition)
+for(init;condition;step)
+do {} while(condition)
+```
+
+- Single space before and after an assignment, binary and ternary operators (=  +  -  <  >  *  /  %  |  &  ^  <=  >=  ==  !=  ?  :).
+```c
+int32_t a;
+
+a = 3 + 4;              // OK
+for (a = 0; a < 5; a++) // OK
+bits |= BIT5;           // OK
+
+a=3+4;                  // Wrong
+a = 3+4;                // Wrong
+for (a=0;a<5;a++)       // Wrong
+bits|=BIT5;             // Wrong
+```
+
+- No space after unary operators (&  *  +  -  ~  !).
+- No space around the . and -> structure member operators.
+- No space before the postfix increment / decrement unary operators and after the prefix increment / decrement unary operators.
+```c
+res = !x;               // OK
+ptr->x;                 // OK
+++i;                    // OK
+
+res = ! x;              // Wrong
+ptr -> x;               // Wrong
+++ i;                   // Wrong
+```
+
+- No space between function name and opening parenthesis.
+- No space between opening parenthesis and first parameter.
+- Single space after every comma.
+```c
+int32_t a = sum(4, 3);              // OK
+
+int32_t a = sum (4, 3);             // Wrong
+int32_t a = sum( 4, 3 );            // Wrong
+int32_t a = sum(4,3);               // Wrong
+```
+- No trailing spaces.
 
 ### Non-ASCII Characters
 
