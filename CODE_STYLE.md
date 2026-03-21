@@ -13,6 +13,8 @@ This document defines the coding style for this C++ project. The goal is **reada
   - [Line Length](#line-length)
   - [Indentation](#indentation)
   - [Spaces](#spaces)
+  - [Brackets](#brackets)
+  - [Parentheses](#parentheses)
   - [Non-ASCII Characters](#non-ascii-characters)
   - [Function Declarations and Definitions](#function-declarations-and-definitions)
   - [Lambda Expressions (Formatting)](#lambda-expressions-formatting)
@@ -262,6 +264,171 @@ int32_t a = sum( 4, 3 );            // Wrong
 int32_t a = sum(4,3);               // Wrong
 ```
 - No trailing spaces.
+
+## Brackets
+
+- Opening curly bracket is always at the same line as reserved keyword (`for`, `while`, `do`, `switch`, `if`, ...).
+```c
+size_t i;
+
+for (i = 0; i < 5; i++) {           // OK
+}
+
+for (i = 0; i < 5; i++){            // Wrong
+}
+
+for (i = 0; i < 5; i++)             // Wrong
+{
+}
+```
+
+- `if/for/while` statement should have brackets if it takes more than one line.
+```c
+// OK
+if (c) {
+    for (int i = 0; i < 10; i++)
+        do_a();
+}
+
+// OK
+if (a)
+    do_a();
+
+// OK
+if (c) {
+    a = 12;
+} else {
+    for (int i = 0; i < 10; i++)
+        do_a();    
+}
+
+// Wrong
+if (c)
+    for (int i = 0; i < 10; i++)
+        do_a();
+
+// Wrong
+if (c)
+    a = 12;
+else {
+    for (int i = 0; i < 10; i++)
+        do_a();    
+}
+```
+
+- In case of `if` or `if-else-if` statement, `else` must be in the same line as closing bracket of first statement.
+```c
+// OK
+if (a) {
+} else if (b) {
+} else {
+}
+
+// Wrong
+if (a) {
+}
+else {
+}
+
+// Wrong
+if (a) {
+}
+else
+{
+}
+```
+
+- In case of `do-while` statement, `while` part must be in the same line as closing bracket of `do` part.
+```c
+// OK
+do {
+    int32_t a;
+    a = do_a();
+    do_b(a);
+} while (check());
+
+// Wrong
+do
+{
+// logic
+} while (check());
+
+// Wrong
+do {
+// logic
+}
+while (check());
+```
+
+- Then part of `if` statement should be in a separate line.
+```c
+// OK
+if (fd) {
+    fclose(fp);
+}
+
+// Wrong
+if (fd) fclose(fp);
+```
+
+- Opening curly bracket for function should be on the same level as closing.
+```c
+// OK
+void my_func(void)
+{
+}
+
+// Wrong
+void my_func(void) {
+}
+```
+
+- for and while without a statement should be in one-line with empty brackets.
+```c
+// OK
+for (i = 0; i < *p; i++) {}
+
+// Wrong
+for (i = 0; i < *p; i++);
+```
+
+## Parentheses
+
+- Do not overuse parentheses.
+```c
+// OK
+if ((a & b) > 0 && c > 0 && d) {
+}
+
+// Wrong
+if ((a & b) > 0 && (c > 0) && (d)) {
+}
+
+// Wrong
+if ((my_func(a))) {
+}
+
+// Wrong
+ptr = &(p->next);
+```
+
+- Use parentheses when assigning in a condition expression of if/for/while.
+```c
+// OK
+for (i = 0; (ret = my_func()); i++)
+
+// Wrong
+for (i = 0; ret = my_func(); i++)
+```
+
+- Use sizeof with parentheses.
+```c
+// OK
+sizeof(a)
+
+// Wrong
+sizeof a
+```
 
 ### Non-ASCII Characters
 
