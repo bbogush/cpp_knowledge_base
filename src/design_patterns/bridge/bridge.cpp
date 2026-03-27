@@ -4,53 +4,72 @@
  */
 
 #include <iostream>
+#include <memory>
 
-class Implementation {
+// Implementor
+class Renderer {
 public:
-    virtual ~Implementation() = default;
-    virtual void operation() = 0;
+    virtual ~Renderer() = default;
+    virtual void render_circle(float x, float y, float radius) const = 0;
 };
 
-class ConcreteImplementationA : public Implementation {
+class OpenGLRenderer : public Renderer {
 public:
-    void operation() override
+    void render_circle(float x, float y, float radius) const override
     {
-        std::cout << "ConcreteImplementationA operation" << std::endl;
+        std::cout << "OpenGL Renderer: Drawing circle at (" << x << ", " << y << ") with radius "
+                  << radius << std::endl;
     }
 };
 
-class ConcreteImplementationB : public Implementation {
+class DirectXRenderer : public Renderer {
 public:
-    void operation() override
+    void render_circle(float x, float y, float radius) const override
     {
-        std::cout << "ConcreteImplementationB operation" << std::endl;
+        std::cout << "DirectX Renderer: Drawing circle at (" << x << ", " << y << ") with radius "
+                  << radius << std::endl;
     }
 };
 
-class Abstraction {
+// Abstraction
+class Shape {
 public:
-    Abstraction(Implementation *impl) : implementation(impl)
+    explicit Shape(std::shared_ptr<Renderer> renderer) : renderer(std::move(renderer))
     {
     }
-    virtual ~Abstraction() = default;
-    virtual void operation()
+    virtual ~Shape() = default;
+    virtual void draw() const = 0;
+
+protected:
+    std::shared_ptr<Renderer> renderer;
+};
+
+class Circle : public Shape {
+public:
+    Circle(std::shared_ptr<Renderer> renderer, float x, float y, float radius) :
+        Shape(std::move(renderer)), x(x), y(y), radius(radius)
     {
-        implementation->operation();
+    }
+
+    void draw() const override
+    {
+        renderer->render_circle(x, y, radius);
     }
 
 private:
-    Implementation *implementation;
+    float x, y, radius;
 };
 
 int main()
 {
-    ConcreteImplementationA implA;
-    Abstraction abstractionA(&implA);
-    abstractionA.operation();
+    auto opengl_renderer = std::make_shared<OpenGLRenderer>();
+    auto directx_renderer = std::make_shared<DirectXRenderer>();
 
-    ConcreteImplementationB implB;
-    Abstraction abstractionB(&implB);
-    abstractionB.operation();
+    Circle circle1(opengl_renderer, 1.0f, 2.0f, 3.0f);
+    Circle circle2(directx_renderer, 4.0f, 5.0f, 6.0f);
+
+    circle1.draw();
+    circle2.draw();
 
     return 0;
 }

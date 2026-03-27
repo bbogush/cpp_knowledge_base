@@ -20,9 +20,10 @@ It separates an algorithm from the object structure it operates on by placing th
 | Role | In `visitor.cpp` | Responsibility |
 |---|---|---|
 | `Visitor` | `Visitor` | Declares a `visit()` overload for each element type |
-| `ConcreteVisitor` | `ABVisitor` | Implements the operation for each element type |
-| `Element` | `A`, `B` | Declares `accept(Visitor&)` |
-| Client | `main()` | Constructs elements and visitors, triggers traversal |
+| `ConcreteVisitor` | `AreaVisitor` | Computes the area for each concrete shape type |
+| Element Interface | `Shape` | Declares `accept(Visitor&)` |
+| Concrete Elements | `Circle`, `Rectangle` | Implement `accept()` and expose geometry via getters |
+| Client | `main()` | Constructs shapes and visitors, triggers traversal |
 
 ---
 
@@ -61,26 +62,37 @@ classDiagram
 
     class Visitor {
         <<interface>>
-        +visit(A& a)*
-        +visit(B& b)*
+        +visit(Circle&)*
+        +visit(Rectangle&)*
     }
 
-    class ABVisitor {
-        +visit(A& a)
-        +visit(B& b)
+    class AreaVisitor {
+        +visit(Circle&)
+        +visit(Rectangle&)
     }
 
-    class A {
-        +name() string
-        +accept(Visitor& v)
+    class Shape {
+        <<abstract>>
+        +accept(Visitor&)*
     }
 
-    class B {
-        +name() string
-        +accept(Visitor& v)
+    class Circle {
+        -radius : double
+        +get_radius() double
+        +accept(Visitor&)
     }
 
-    Visitor <|-- ABVisitor
-    A ..> Visitor : accept calls visit
-    B ..> Visitor : accept calls visit
+    class Rectangle {
+        -width : double
+        -height : double
+        +get_width() double
+        +get_height() double
+        +accept(Visitor&)
+    }
+
+    Visitor <|-- AreaVisitor
+    Shape <|-- Circle
+    Shape <|-- Rectangle
+    Circle ..> Visitor : accept calls visit
+    Rectangle ..> Visitor : accept calls visit
 ```

@@ -19,12 +19,12 @@ It groups factories that share a common theme, ensuring products from one factor
 
 | Role | In `abstract_factory.cpp` | Responsibility |
 |---|---|---|
-| `AbstractProductA` | `AbstractProductA` | Abstract interface for the first product type |
-| `AbstractProductB` | `AbstractProductB` | Abstract interface for the second product type |
-| `ConcreteProductA1/A2` | `ConcreteProductA1`, `ConcreteProductA2` | Concrete variants of product A for each factory |
-| `ConcreteProductB1/B2` | `ConcreteProductB1`, `ConcreteProductB2` | Concrete variants of product B for each factory |
-| `AbstractFactory` | `AbstractFactory` | Declares creation methods for each abstract product type |
-| `ConcreteFactory` | `ConcreteFactory1`, `ConcreteFactory2` | Creates the matching product variants for a specific family |
+| Abstract Product A | `Button` | Abstract interface for buttons |
+| Abstract Product B | `Checkbox` | Abstract interface for checkboxes |
+| Concrete Products A | `WindowsButton`, `LinuxButton` | Platform-specific button implementations |
+| Concrete Products B | `WindowsCheckbox`, `LinuxCheckbox` | Platform-specific checkbox implementations |
+| Abstract Factory | `GUIFactory` | Declares `create_button()` and `create_checkbox()` factory methods |
+| Concrete Factories | `WindowsFactory`, `LinuxFactory` | Create matching GUI widgets for a specific platform |
 | Client | `main()` | Uses the abstract factory and products without knowing their concrete types |
 
 ---
@@ -50,58 +50,58 @@ It groups factories that share a common theme, ensuring products from one factor
 classDiagram
     direction LR
 
-    class AbstractProductA {
+    class Button {
         <<interface>>
-        +operationA()*
+        +render() void*
     }
 
-    class AbstractProductB {
+    class Checkbox {
         <<interface>>
-        +operationB()*
+        +render() void*
     }
 
-    class ConcreteProductA1 {
-        +operationA()
+    class WindowsButton {
+        +render() void
     }
 
-    class ConcreteProductA2 {
-        +operationA()
+    class LinuxButton {
+        +render() void
     }
 
-    class ConcreteProductB1 {
-        +operationB()
+    class WindowsCheckbox {
+        +render() void
     }
 
-    class ConcreteProductB2 {
-        +operationB()
+    class LinuxCheckbox {
+        +render() void
     }
 
-    class AbstractFactory {
+    class GUIFactory {
         <<interface>>
-        +createProductA()* AbstractProductA
-        +createProductB()* AbstractProductB
+        +create_button()* unique_ptr~Button~
+        +create_checkbox()* unique_ptr~Checkbox~
     }
 
-    class ConcreteFactory1 {
-        +createProductA() AbstractProductA
-        +createProductB() AbstractProductB
+    class WindowsFactory {
+        +create_button() unique_ptr~Button~
+        +create_checkbox() unique_ptr~Checkbox~
     }
 
-    class ConcreteFactory2 {
-        +createProductA() AbstractProductA
-        +createProductB() AbstractProductB
+    class LinuxFactory {
+        +create_button() unique_ptr~Button~
+        +create_checkbox() unique_ptr~Checkbox~
     }
 
-    AbstractProductA <|-- ConcreteProductA1
-    AbstractProductA <|-- ConcreteProductA2
-    AbstractProductB <|-- ConcreteProductB1
-    AbstractProductB <|-- ConcreteProductB2
-    AbstractFactory <|-- ConcreteFactory1
-    AbstractFactory <|-- ConcreteFactory2
-    ConcreteFactory1 ..> ConcreteProductA1 : creates
-    ConcreteFactory1 ..> ConcreteProductB1 : creates
-    ConcreteFactory2 ..> ConcreteProductA2 : creates
-    ConcreteFactory2 ..> ConcreteProductB2 : creates
-    AbstractFactory ..> AbstractProductA : uses
-    AbstractFactory ..> AbstractProductB : uses
+    Button <|-- WindowsButton
+    Button <|-- LinuxButton
+    Checkbox <|-- WindowsCheckbox
+    Checkbox <|-- LinuxCheckbox
+    GUIFactory <|-- WindowsFactory
+    GUIFactory <|-- LinuxFactory
+    WindowsFactory ..> WindowsButton : creates
+    WindowsFactory ..> WindowsCheckbox : creates
+    LinuxFactory ..> LinuxButton : creates
+    LinuxFactory ..> LinuxCheckbox : creates
+    GUIFactory ..> Button : uses
+    GUIFactory ..> Checkbox : uses
 ```

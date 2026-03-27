@@ -5,47 +5,90 @@
 
 #include <iostream>
 
-class A;
-class B;
+class Circle;
+class Rectangle;
 
 class Visitor {
 public:
-    virtual void visit(A &a) = 0;
-    virtual void visit(B &b) = 0;
+    virtual ~Visitor() = default;
+
+    virtual void visit(Circle &circle) = 0;
+    virtual void visit(Rectangle &rectangle) = 0;
 };
 
-class A {
+class Shape {
 public:
-    std::string name() { return "A"; }
-    void accept(Visitor &v) { v.visit(*this); }
+    virtual ~Shape() = default;
+    virtual void accept(Visitor &visitor) = 0;
 };
 
-class B {
+class Circle : public Shape {
 public:
-    std::string name() { return "B"; }
-    void accept(Visitor &v) { v.visit(*this); }
-};
-
-class ABVisitor : public Visitor {
-public:
-    void visit(A &a) {
-        std::cout << a.name() << '\n';
+    explicit Circle(double radius) : radius(radius)
+    {
     }
 
-    void visit(B &b) {
-        std::cout << b.name() << '\n';
+    double get_radius() const
+    {
+        return radius;
+    }
+
+    void accept(Visitor &visitor) override
+    {
+        visitor.visit(*this);
+    }
+
+private:
+    double radius;
+};
+
+class Rectangle : public Shape {
+public:
+    Rectangle(double width, double height) : width(width), height(height)
+    {
+    }
+
+    double get_width() const
+    {
+        return width;
+    }
+    double get_height() const
+    {
+        return height;
+    }
+
+    void accept(Visitor &visitor) override
+    {
+        visitor.visit(*this);
+    }
+
+private:
+    double width;
+    double height;
+};
+
+class AreaVisitor : public Visitor {
+public:
+    void visit(Circle &circle) override
+    {
+        double area = 3.14159 * circle.get_radius() * circle.get_radius();
+        std::cout << "Area of Circle: " << area << std::endl;
+    }
+    void visit(Rectangle &rectangle) override
+    {
+        double area = rectangle.get_width() * rectangle.get_height();
+        std::cout << "Area of Rectangle: " << area << std::endl;
     }
 };
 
 int main()
 {
-    ABVisitor v;
-    
-    A a;
-    a.accept(v);
+    Circle circle(5.0);
+    Rectangle rectangle(4.0, 6.0);
 
-    B b;
-    b.accept(v);
+    AreaVisitor area_visitor;
+    circle.accept(area_visitor);
+    rectangle.accept(area_visitor);
 
     return 0;
 }

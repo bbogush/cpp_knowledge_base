@@ -19,9 +19,9 @@ It hides the complexity of the subsystem behind a single unified interface, maki
 
 | Role | In `facade.cpp` | Responsibility |
 |---|---|---|
-| `Facade` | `Facade` | Provides a simple `operation()` interface that delegates to subsystem classes |
-| Subsystem classes | `SubsystemA`, `SubsystemB` | Implement subsystem functionality; unaware of the facade |
-| Client | `main()` | Uses only `Facade`, unaware of the underlying subsystems |
+| `Facade` | `HomeTheaterFacade` | Provides `watch_movie()` and `end_movie()` high-level operations |
+| Subsystem classes | `Player`, `SoundSystem` | Implement low-level operations (`on()`, `off()`, `play()`, `set_volume()`); unaware of the facade |
+| Client | `main()` | Uses only `HomeTheaterFacade`, unaware of `Player` or `SoundSystem` internals |
 
 ---
 
@@ -47,20 +47,25 @@ It hides the complexity of the subsystem behind a single unified interface, maki
 classDiagram
     direction LR
 
-    class Facade {
-        -subsystemA : SubsystemA
-        -subsystemB : SubsystemB
-        +operation() void
+    class HomeTheaterFacade {
+        -player : Player&
+        -sound_system : SoundSystem&
+        +watch_movie(movie : string) void
+        +end_movie() void
     }
 
-    class SubsystemA {
-        +operationA() void
+    class Player {
+        +on() void
+        +play(movie : string) void
+        +off() void
     }
 
-    class SubsystemB {
-        +operationB() void
+    class SoundSystem {
+        +on() void
+        +set_volume(level : int) void
+        +off() void
     }
 
-    Facade --> SubsystemA : uses
-    Facade --> SubsystemB : uses
+    HomeTheaterFacade --> Player : uses
+    HomeTheaterFacade --> SoundSystem : uses
 ```

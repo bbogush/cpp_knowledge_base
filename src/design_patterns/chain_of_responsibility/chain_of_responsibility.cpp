@@ -14,7 +14,7 @@ public:
         next = next_handler;
     }
 
-    virtual void handle_request(const std::string &request)
+    virtual void handle_request(const std::string &request) const
     {
         if (next) {
             next->handle_request(request);
@@ -29,7 +29,7 @@ private:
 
 class LevelOneSupport : public SupportHandler {
 public:
-    void handle_request(const std::string &request) override
+    void handle_request(const std::string &request) const override
     {
         if (request == "Level 1") {
             std::cout << "Handled by Level One Support" << std::endl;
@@ -41,7 +41,7 @@ public:
 
 class LevelTwoSupport : public SupportHandler {
 public:
-    void handle_request(const std::string &request) override
+    void handle_request(const std::string &request) const override
     {
         if (request == "Level 2") {
             std::cout << "Handled by Level Two Support" << std::endl;
@@ -53,7 +53,7 @@ public:
 
 class LevelThreeSupport : public SupportHandler {
 public:
-    void handle_request(const std::string &request) override
+    void handle_request(const std::string &request) const override
     {
         if (request == "Level 3") {
             std::cout << "Handled by Level Three Support" << std::endl;

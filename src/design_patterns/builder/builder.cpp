@@ -34,7 +34,7 @@ public:
             return *this;
         }
 
-        Computer build()
+        Computer build() const
         {
             return std::move(*computer);
         }

@@ -4,40 +4,43 @@
  */
 
 #include <iostream>
+#include <memory>
 
-class Target {
+class Printer {
 public:
-    virtual ~Target() = default;
-    virtual void request() = 0;
+    virtual ~Printer() = default;
+    virtual void print(const std::string &message) const = 0;
 };
 
-class Adaptee {
+class LegacyPrinter {
 public:
-    void specificRequest()
+    void legacy_print(const std::string &message) const
     {
-        std::cout << "Adaptee specific request" << std::endl;
+        std::cout << "Legacy Printer: " << message << std::endl;
     }
 };
 
-class Adapter : public Target {
+class PrinterAdapter : public Printer {
 public:
-    Adapter(Adaptee *adaptee) : adaptee(adaptee)
+    PrinterAdapter(std::unique_ptr<LegacyPrinter> legacy_printer) :
+        legacy_printer(std::move(legacy_printer))
     {
     }
-    void request() override
+
+    void print(const std::string &message) const override
     {
-        adaptee->specificRequest();
+        legacy_printer->legacy_print(message);
     }
 
 private:
-    Adaptee *adaptee;
+    std::unique_ptr<LegacyPrinter> legacy_printer;
 };
 
 int main()
 {
-    Adaptee adaptee;
-    Adapter adapter(&adaptee);
-    adapter.request();
+    std::unique_ptr<LegacyPrinter> legacy_printer = std::make_unique<LegacyPrinter>();
+    PrinterAdapter adapter(std::move(legacy_printer));
+    adapter.print("Hello, World!");
 
     return 0;
 }

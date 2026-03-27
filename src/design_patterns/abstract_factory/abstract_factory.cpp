@@ -4,101 +4,101 @@
  */
 
 #include <iostream>
+#include <memory>
 
-class AbstractProductA {
+class Button {
 public:
-    virtual ~AbstractProductA() = default;
-    virtual void operationA() = 0;
+    virtual ~Button() = default;
+    virtual void render() const = 0;
 };
 
-class ConcreteProductA1 : public AbstractProductA {
+class Checkbox {
 public:
-    void operationA() override
+    virtual ~Checkbox() = default;
+    virtual void render() const = 0;
+};
+
+class WindowsButton : public Button {
+public:
+    void render() const override
     {
-        std::cout << "ConcreteProductA1 operationA" << std::endl;
+        std::cout << "Rendering Windows Button" << std::endl;
     }
 };
 
-class ConcreteProductA2 : public AbstractProductA {
+class WindowsCheckbox : public Checkbox {
 public:
-    void operationA() override
+    void render() const override
     {
-        std::cout << "ConcreteProductA2 operationA" << std::endl;
+        std::cout << "Rendering Windows Checkbox" << std::endl;
     }
 };
 
-class AbstractProductB {
+class LinuxButton : public Button {
 public:
-    virtual ~AbstractProductB() = default;
-    virtual void operationB() = 0;
-};
-
-class ConcreteProductB1 : public AbstractProductB {
-public:
-    void operationB() override
+    void render() const override
     {
-        std::cout << "ConcreteProductB1 operationB" << std::endl;
+        std::cout << "Rendering Linux Button" << std::endl;
     }
 };
 
-class ConcreteProductB2 : public AbstractProductB {
+class LinuxCheckbox : public Checkbox {
 public:
-    void operationB() override
+    void render() const override
     {
-        std::cout << "ConcreteProductB2 operationB" << std::endl;
+        std::cout << "Rendering Linux Checkbox" << std::endl;
     }
 };
 
-class AbstractFactory {
+class GUIFactory {
 public:
-    virtual ~AbstractFactory() = default;
-    virtual AbstractProductA *createProductA() = 0;
-    virtual AbstractProductB *createProductB() = 0;
+    virtual ~GUIFactory() = default;
+    virtual std::unique_ptr<Button> create_button() const = 0;
+    virtual std::unique_ptr<Checkbox> create_checkbox() const = 0;
 };
 
-class ConcreteFactory1 : public AbstractFactory {
+class WindowsFactory : public GUIFactory {
 public:
-    AbstractProductA *createProductA() override
+    std::unique_ptr<Button> create_button() const override
     {
-        return new ConcreteProductA1();
+        return std::make_unique<WindowsButton>();
     }
-    AbstractProductB *createProductB() override
+
+    std::unique_ptr<Checkbox> create_checkbox() const override
     {
-        return new ConcreteProductB1();
+        return std::make_unique<WindowsCheckbox>();
     }
 };
 
-class ConcreteFactory2 : public AbstractFactory {
+class LinuxFactory : public GUIFactory {
 public:
-    AbstractProductA *createProductA() override
+    std::unique_ptr<Button> create_button() const override
     {
-        return new ConcreteProductA2();
+        return std::make_unique<LinuxButton>();
     }
-    AbstractProductB *createProductB() override
+
+    std::unique_ptr<Checkbox> create_checkbox() const override
     {
-        return new ConcreteProductB2();
+        return std::make_unique<LinuxCheckbox>();
     }
 };
 
 int main()
 {
-    AbstractFactory *factory1 = new ConcreteFactory1();
-    AbstractProductA *productA1 = factory1->createProductA();
-    AbstractProductB *productB1 = factory1->createProductB();
-    productA1->operationA();
-    productB1->operationB();
-    delete productA1;
-    delete productB1;
-    delete factory1;
+    std::unique_ptr<GUIFactory> factory;
+    std::string os = "Windows"; // This could be determined at runtime
 
-    AbstractFactory *factory2 = new ConcreteFactory2();
-    AbstractProductA *productA2 = factory2->createProductA();
-    AbstractProductB *productB2 = factory2->createProductB();
-    productA2->operationA();
-    productB2->operationB();
-    delete productA2;
-    delete productB2;
-    delete factory2;
+    if (os == "Windows") {
+        factory = std::make_unique<WindowsFactory>();
+    } else if (os == "Linux") {
+        factory = std::make_unique<LinuxFactory>();
+    }
+
+    auto button = factory->create_button();
+    auto checkbox = factory->create_checkbox();
+
+    button->render();
+    checkbox->render();
 
     return 0;
 }

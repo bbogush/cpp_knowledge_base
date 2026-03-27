@@ -19,10 +19,11 @@ Instead of using inheritance to extend both dimensions, Bridge uses composition 
 
 | Role | In `bridge.cpp` | Responsibility |
 |---|---|---|
-| `Implementation` | `Implementation` | Declares the interface for concrete implementations via `operation()` |
-| `ConcreteImplementation` | `ConcreteImplementationA`, `ConcreteImplementationB` | Provides a specific platform/variant implementation |
-| `Abstraction` | `Abstraction` | Holds a reference to an `Implementation` and delegates calls to it |
-| Client | `main()` | Creates a concrete implementation and injects it into the abstraction |
+| Implementor | `Renderer` | Declares the rendering interface via `render_circle()` |
+| Concrete Implementors | `OpenGLRenderer`, `DirectXRenderer` | Provide platform-specific rendering implementations |
+| Abstraction | `Shape` | Holds a `shared_ptr<Renderer>` and declares `draw()` |
+| Refined Abstraction | `Circle` | Extends `Shape` with concrete geometry; delegates rendering to the renderer |
+| Client | `main()` | Creates renderers and injects them into shapes via the constructor |
 
 ---
 
@@ -48,25 +49,34 @@ Instead of using inheritance to extend both dimensions, Bridge uses composition 
 classDiagram
     direction LR
 
-    class Implementation {
+    class Renderer {
         <<interface>>
-        +operation() void*
+        +render_circle(x, y, radius : float) void*
     }
 
-    class ConcreteImplementationA {
-        +operation() void
+    class OpenGLRenderer {
+        +render_circle(x, y, radius : float) void
     }
 
-    class ConcreteImplementationB {
-        +operation() void
+    class DirectXRenderer {
+        +render_circle(x, y, radius : float) void
     }
 
-    class Abstraction {
-        -implementation : Implementation*
-        +operation() void
+    class Shape {
+        <<abstract>>
+        #renderer : shared_ptr~Renderer~
+        +draw() void*
     }
 
-    Implementation <|-- ConcreteImplementationA
-    Implementation <|-- ConcreteImplementationB
-    Abstraction o--> Implementation : delegates to
+    class Circle {
+        -x : float
+        -y : float
+        -radius : float
+        +draw() void
+    }
+
+    Renderer <|-- OpenGLRenderer
+    Renderer <|-- DirectXRenderer
+    Shape <|-- Circle
+    Shape o--> Renderer : delegates to
 ```

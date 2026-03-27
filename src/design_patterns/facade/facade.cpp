@@ -4,41 +4,79 @@
  */
 
 #include <iostream>
+#include <string>
 
-class SubsystemA {
+// Subsystem 1
+class Player {
 public:
-    void operationA()
+    void on() const
     {
-        std::cout << "SubsystemA operationA" << std::endl;
+        std::cout << "Player ON\n";
+    }
+    void play(const std::string &movie) const
+    {
+        std::cout << "Playing movie: " << movie << "\n";
+    }
+    void off() const
+    {
+        std::cout << "Player OFF\n";
     }
 };
 
-class SubsystemB {
+// Subsystem 2
+class SoundSystem {
 public:
-    void operationB()
+    void on() const
     {
-        std::cout << "SubsystemB operationB" << std::endl;
+        std::cout << "Sound System ON\n";
+    }
+    void set_volume(int level) const
+    {
+        std::cout << "Setting volume to: " << level << "\n";
+    }
+    void off() const
+    {
+        std::cout << "Sound System OFF\n";
     }
 };
 
-class Facade {
+// Facade
+class HomeTheaterFacade {
 public:
-    void operation()
+    HomeTheaterFacade(Player &player, SoundSystem &sound_system) :
+        player(player), sound_system(sound_system)
     {
-        std::cout << "Facade operation" << std::endl;
-        subsystemA.operationA();
-        subsystemB.operationB();
+    }
+
+    void watch_movie(const std::string &movie)
+    {
+        std::cout << "Get ready to watch a movie...\n";
+        player.on();
+        sound_system.on();
+        sound_system.set_volume(5);
+        player.play(movie);
+    }
+
+    void end_movie()
+    {
+        std::cout << "Shutting down the home theater...\n";
+        player.off();
+        sound_system.off();
     }
 
 private:
-    SubsystemA subsystemA;
-    SubsystemB subsystemB;
+    Player &player;
+    SoundSystem &sound_system;
 };
 
 int main()
 {
-    Facade facade;
-    facade.operation();
+    Player player;
+    SoundSystem sound_system;
+    HomeTheaterFacade home_theater(player, sound_system);
+
+    home_theater.watch_movie("Inception");
+    home_theater.end_movie();
 
     return 0;
 }
